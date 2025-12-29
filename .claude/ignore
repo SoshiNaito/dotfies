@@ -1,0 +1,42 @@
+# 依存関係
+node_modules/
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# ビルド成果物
+dist/
+build/
+out/
+*.min.js
+*.bundle.js
+
+# ログファイル
+*.log
+logs/
+
+# 環境設定
+.env
+.env.local
+.env.*.local
+
+# IDEファイル
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# テストカバレッジ
+coverage/
+.nyc_output/
+
+# OS固有
+.DS_Store
+Thumbs.db
+
+# 大きなデータファイル
+*.csv
+*.xlsx
+*.db
+*.sqlite
