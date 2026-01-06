@@ -15,9 +15,8 @@ description: RESTful API設計のベストプラクティスとガイドライ�
 ## URL設計
 
 ### 基本ルール
-
 ```
-# ✅ 良い例
+✅ 良い例:
 GET    /users           # ユーザー一覧
 GET    /users/123       # 特定ユーザー
 POST   /users           # ユーザー作成
@@ -25,20 +24,18 @@ PUT    /users/123       # ユーザー更新（全体）
 PATCH  /users/123       # ユーザー更新（部分）
 DELETE /users/123       # ユーザー削除
 
-# ❌ 悪い例
-GET    /getUsers
-GET    /user/123        # 複数形を使う
-POST   /createUser
-POST   /users/123/delete
+❌ 悪い例:
+GET    /getUsers        # 動詞を含む
+GET    /user/123        # 単数形
+POST   /createUser      # 動詞を含む
+POST   /users/123/delete # DELETEを使うべき
 ```
 
 ### リソースの関係
-
 ```
 # ネストされたリソース
 GET    /users/123/posts           # ユーザー123の投稿一覧
 POST   /users/123/posts           # ユーザー123に投稿作成
-GET    /users/123/posts/456       # 特定の投稿
 
 # 浅いネスト（推奨：2階層まで）
 GET    /posts/456                 # 投稿を直接取得
@@ -46,7 +43,6 @@ GET    /posts?user_id=123         # クエリでフィルタ
 ```
 
 ### クエリパラメータ
-
 ```
 # フィルタリング
 GET /posts?status=published&author_id=123
@@ -84,26 +80,19 @@ GET /posts/123?include=author,comments
 ## レスポンス形式
 
 ### 成功レスポンス
-
-```json
+```
 // 単一リソース
 {
   "data": {
     "id": "123",
-    "type": "user",
-    "attributes": {
-      "name": "田中太郎",
-      "email": "tanaka@example.com"
-    }
+    "name": "田中太郎",
+    "email": "tanaka@example.com"
   }
 }
 
 // コレクション
 {
-  "data": [
-    { "id": "1", "name": "..." },
-    { "id": "2", "name": "..." }
-  ],
+  "data": [...],
   "meta": {
     "total": 100,
     "page": 1,
@@ -118,21 +107,13 @@ GET /posts/123?include=author,comments
 ```
 
 ### エラーレスポンス
-
-```json
+```
 {
   "error": {
     "code": "VALIDATION_ERROR",
     "message": "入力内容に問題があります",
     "details": [
-      {
-        "field": "email",
-        "message": "有効なメールアドレスを入力してください"
-      },
-      {
-        "field": "password",
-        "message": "8文字以上で入力してください"
-      }
+      { "field": "email", "message": "有効なメールアドレスを入力してください" }
     ]
   }
 }
@@ -141,17 +122,13 @@ GET /posts/123?include=author,comments
 ## 認証
 
 ### Bearer Token
-
-```http
-GET /api/users HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
+```
+Authorization: Bearer <token>
 ```
 
 ### APIキー
-
-```http
-GET /api/data HTTP/1.1
-X-API-Key: your-api-key
+```
+X-API-Key: <api-key>
 ```
 
 ## バージョニング
@@ -162,125 +139,7 @@ GET /api/v1/users
 GET /api/v2/users
 
 # ヘッダーベース
-GET /api/users
 Accept: application/vnd.api+json; version=2
-```
-
-## 実装例
-
-### Express Router
-
-```typescript
-import { Router } from 'express'
-
-const router = Router()
-
-// 一覧取得
-router.get('/', async (req, res) => {
-  const { page = 1, per_page = 20, sort, ...filters } = req.query
-
-  const { data, total } = await userService.findAll({
-    filters,
-    sort: parseSort(sort),
-    pagination: { page: Number(page), perPage: Number(per_page) }
-  })
-
-  res.json({
-    data,
-    meta: { total, page: Number(page), per_page: Number(per_page) },
-    links: buildPaginationLinks(req, total, Number(page), Number(per_page))
-  })
-})
-
-// 単一取得
-router.get('/:id', async (req, res) => {
-  const user = await userService.findById(req.params.id)
-  if (!user) {
-    return res.status(404).json({
-      error: { code: 'NOT_FOUND', message: 'ユーザーが見つかりません' }
-    })
-  }
-  res.json({ data: user })
-})
-
-// 作成
-router.post('/', validateBody(createUserSchema), async (req, res) => {
-  const user = await userService.create(req.body)
-  res.status(201).json({ data: user })
-})
-
-// 更新
-router.patch('/:id', validateBody(updateUserSchema), async (req, res) => {
-  const user = await userService.update(req.params.id, req.body)
-  res.json({ data: user })
-})
-
-// 削除
-router.delete('/:id', async (req, res) => {
-  await userService.delete(req.params.id)
-  res.status(204).send()
-})
-
-export default router
-```
-
-### OpenAPI仕様
-
-```yaml
-openapi: 3.0.0
-info:
-  title: User API
-  version: 1.0.0
-
-paths:
-  /users:
-    get:
-      summary: ユーザー一覧取得
-      parameters:
-        - name: page
-          in: query
-          schema:
-            type: integer
-            default: 1
-        - name: per_page
-          in: query
-          schema:
-            type: integer
-            default: 20
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserList'
-
-    post:
-      summary: ユーザー作成
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateUser'
-      responses:
-        '201':
-          description: 作成成功
-        '422':
-          description: バリデーションエラー
-
-components:
-  schemas:
-    User:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        email:
-          type: string
-          format: email
 ```
 
 ## チェックリスト
@@ -306,3 +165,8 @@ components:
 - [ ] 認可チェックがある
 - [ ] レート制限がある
 - [ ] 入力バリデーションがある
+
+### ドキュメント
+- [ ] OpenAPI/Swagger仕様がある
+- [ ] エンドポイント一覧がある
+- [ ] リクエスト/レスポンス例がある

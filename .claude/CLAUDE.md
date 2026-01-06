@@ -1,61 +1,80 @@
-# プロジェクト名
-[プロジェクトの簡潔な説明]
+# Claude Code 共通設定
 
-## アーキテクチャ
-- **バックエンド:** Node.js + Express + PostgreSQL
-- **フロントエンド:** React + TypeScript + Vite
-- **認証:** JWT (HTTP-only cookies)
-- **デプロイ:** Docker + AWS ECS
+このファイルはdotfilesとして管理され、全プロジェクトに適用される共通ルールを定義します。
+
+## コーディング原則
+
+### 品質基準
+- **テストファースト**: 実装前にテストを書く（TDD）
+- **シンプルさ優先**: 過度な抽象化を避け、読みやすさを重視
+- **単一責任**: 1つの関数/クラスは1つの責任のみ
+
+### セキュリティ必須事項
+- パスワードは必ずハッシュ化（bcrypt/argon2、rounds >= 12）
+- SQLは必ずパラメータ化クエリを使用
+- ユーザー入力は必ずバリデーション
+- 機密情報は環境変数で管理（コードにハードコードしない）
+- 出力時は適切にエスケープ（XSS対策）
+
+### 命名規則
+- ファイル名: `kebab-case`
+- クラス/コンポーネント: `PascalCase`
+- 関数/変数: `camelCase`
+- 定数: `UPPER_SNAKE_CASE`
+- 意図が明確な名前を使用（略語を避ける）
+
+## Git ワークフロー
+
+### ブランチ戦略
+```
+main           # 本番環境
+├── feature/*  # 新機能
+├── fix/*      # バグ修正
+├── refactor/* # リファクタリング
+└── docs/*     # ドキュメント
+```
+
+### コミットメッセージ
+Conventional Commits形式を使用:
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+Types: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`
+
+## 開発フロー
+
+1. 機能ブランチを作成
+2. テストを先に書く（RED）
+3. 最小実装でテストをパス（GREEN）
+4. リファクタリング（REFACTOR）
+5. コードレビューを受ける
+6. mainにマージ
+
+## プロジェクト固有の設定
+
+各プロジェクトで以下をカスタマイズしてください:
+
+```markdown
+<!-- プロジェクトのルートに .claude/CLAUDE.md を作成 -->
+
+# プロジェクト名
+
+## 技術スタック
+- バックエンド: [技術]
+- フロントエンド: [技術]
+- データベース: [技術]
 
 ## プロジェクト構造
-```
-src/
-├── api/           # RESTful APIエンドポイント
-├── models/        # データモデル
-├── services/      # ビジネスロジック
-├── middleware/    # Express middleware
-└── utils/         # ユーティリティ関数
-```
-
-## コーディング規約
-1. **スタイル:** ESLint + Prettier設定に従う
-2. **テスト:** Jest + React Testing Library
-3. **命名規則:**
-   - ファイル: kebab-case
-   - コンポーネント: PascalCase
-   - 関数: camelCase
-   - 定数: UPPER_SNAKE_CASE
-
-## 開発ワークフロー
-1. 機能ブランチを作成 (`feature/xxx`)
-2. TDDでテストを先に書く
-3. 実装してテストをパス
-4. コードレビューを受ける
-5. mainにマージ
-
-## 重要な制約
-- パスワードは bcrypt (rounds=12) でハッシュ化
-- 全APIエンドポイントに認証を実装
-- 環境変数は `.env` で管理（.gitignoreに追加済み）
-- SQLインジェクション対策：必ずparameterized queries使用
-- XSS対策：出力時に必ずエスケープ
-
-## 依存関係
-- Node.js: v20.x
-- PostgreSQL: v15.x
-- Redis: v7.x (セッション管理用)
+[ディレクトリ構造を記載]
 
 ## よく使うコマンド
-```bash
-npm run dev          # 開発サーバー起動
-npm test             # テスト実行
-npm run test:watch   # テストwatch mode
-npm run lint         # Lint実行
-npm run db:migrate   # DB migration実行
-```
+[プロジェクト固有のコマンド]
 
-## 参考ドキュメント
-- API仕様: `docs/api-spec.md`
-- DB設計: `docs/database-schema.md`
-- セキュリティガイド: `docs/security.md`
+## 追加の制約
+[プロジェクト固有のルール]
 ```

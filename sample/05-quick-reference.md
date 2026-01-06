@@ -85,22 +85,9 @@ docs/<内容>         # ドキュメント
 | test | テスト |
 | chore | その他 |
 
-### 例
-```
-feat(auth): ログイン機能を追加
-
-- JWTトークンによる認証
-- リメンバーミー機能
-- パスワードリセット
-
-Closes #123
-```
-
 ## セキュリティチェックリスト
 
-実装時に確認:
-
-- [ ] パスワード → bcrypt (rounds=12)
+- [ ] パスワード → ハッシュ化（bcrypt/argon2）
 - [ ] SQL → パラメータ化クエリ
 - [ ] HTML出力 → エスケープ
 - [ ] Cookie → HTTP-only, Secure
@@ -124,32 +111,3 @@ Closes #123
 - [ ] 適切なインデックス
 - [ ] ページネーション
 - [ ] 必要に応じてキャッシュ
-
-## トラブルシューティング
-
-### コマンドが動かない
-```bash
-# .claudeディレクトリ確認
-ls -la .claude/
-
-# ファイル権限確認
-chmod -R 755 .claude/
-```
-
-### MCPサーバーエラー
-```bash
-# 環境変数確認
-echo $GITHUB_TOKEN
-
-# npx確認
-npx --version
-```
-
-### テスト失敗
-```bash
-# 単体で実行
-npm test -- --watch
-
-# 特定ファイル
-npm test -- path/to/test.ts
-```

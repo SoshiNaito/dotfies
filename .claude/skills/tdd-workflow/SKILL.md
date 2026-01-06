@@ -11,57 +11,40 @@ allowed-tools: Read, Write, Edit, Bash
 ## 🔄 TDDサイクル
 
 ### 1. RED - テストを書く（失敗させる）
-```typescript
-// ✅ 良い例: 明確で具体的
-describe('UserService', () => {
-  describe('createUser', () => {
-    it('ハッシュ化されたパスワードでユーザーを作成する', async () => {
-      const input = { email: 'test@example.com', password: 'password123' }
-      const user = await userService.createUser(input)
-      
-      expect(user.email).toBe(input.email)
-      expect(user.password).not.toBe(input.password) // ハッシュ化確認
-      expect(user.id).toBeDefined()
-    })
-    
-    it('重複したメールアドレスの場合エラーをスローする', async () => {
-      await userService.createUser({ email: 'test@example.com', password: 'pass' })
-      
-      await expect(
-        userService.createUser({ email: 'test@example.com', password: 'pass' })
-      ).rejects.toThrow('メールアドレスは既に使用されています')
-    })
-  })
-})
-```
+- 実装したい機能のテストを先に書く
+- テストを実行して失敗することを確認
+- 失敗理由が「機能が存在しない」であることを確認
 
 ### 2. GREEN - 実装する（テストをパスさせる）
-最小限のコードでテストをパスさせます。
+- テストをパスする**最小限**のコードを書く
+- 完璧を目指さず、まずテストを通すことに集中
+- テストを実行して成功を確認
 
 ### 3. REFACTOR - リファクタリング
-テストがパスした状態で、コードの品質を向上させます。
+- テストがパスした状態で、コードの品質を向上
+- 重複を排除し、可読性を向上
+- テストが引き続きパスすることを確認
 
 ## 📋 テスト構造
 
 ### AAAパターン
-```typescript
-it('何かをする', () => {
-  // Arrange（準備）
-  const input = ...
-  const expected = ...
-  
-  // Act（実行）
-  const result = someFunction(input)
-  
-  // Assert（検証）
-  expect(result).toBe(expected)
-})
+```
+テスト名: 〇〇の場合、△△する
+
+// Arrange（準備）
+テストに必要なデータや状態を準備
+
+// Act（実行）
+テスト対象の処理を実行
+
+// Assert（検証）
+結果が期待通りか検証
 ```
 
 ## 🎯 テストのベストプラクティス
 
 ### ✅ すべきこと
-- テスト名は「〜する」「〜すべき」形式
+- テスト名は「〇〇の場合、△△する」形式
 - 1テスト = 1つの関心事
 - Given-When-Then形式で考える
 - エッジケースをテスト
@@ -70,25 +53,8 @@ it('何かをする', () => {
 ### ❌ すべきでないこと
 - 実装の詳細をテストしない
 - 複数の関心事を1テストに含めない
-- 外部APIに依存しない
-- ランダム値を使わない
-
-## 🛠️ コマンド
-
-### テスト実行
-```bash
-# 全テスト実行
-npm test
-
-# Watchモード
-npm test -- --watch
-
-# カバレッジ確認
-npm run test:coverage
-
-# 特定ファイルのみ
-npm test -- path/to/test.spec.ts
-```
+- 外部APIに直接依存しない
+- ランダム値を使わない（再現性のため）
 
 ## 📊 カバレッジ目標
 - ステートメントカバレッジ: > 80%
@@ -96,43 +62,44 @@ npm test -- path/to/test.spec.ts
 - 関数カバレッジ: > 80%
 - 行カバレッジ: > 80%
 
-## 🔍 例: 完全なTDDフロー
+## 🔍 TDDフローの例
 
 ### ステップ1: 要件理解
 「ユーザーを作成する機能。メールは一意、パスワードはハッシュ化」
 
 ### ステップ2: テスト作成（RED）
-```typescript
-it('ハッシュ化されたパスワードでユーザーを作成する', async () => {
-  // テストコード
-})
+```
+テスト: ハッシュ化されたパスワードでユーザーを作成する
+- 準備: email と password を用意
+- 実行: createUser を呼び出す
+- 検証:
+  - email が保存されている
+  - password がハッシュ化されている（元の値と異なる）
+  - id が生成されている
 ```
 
 ### ステップ3: 実行 → 失敗確認
-```bash
-npm test
-# FAIL: createUserが定義されていません
+```
+FAIL: createUserが定義されていません
 ```
 
 ### ステップ4: 最小実装（GREEN）
-```typescript
-async createUser(data: CreateUserDto) {
-  const hashedPassword = await bcrypt.hash(data.password, 12)
-  return this.userRepository.save({
-    ...data,
-    password: hashedPassword
-  })
-}
+```
+createUser 関数を実装:
+1. パスワードをハッシュ化
+2. データを保存
+3. 結果を返す
 ```
 
 ### ステップ5: テスト実行 → 成功
-```bash
-npm test
-# PASS: ハッシュ化されたパスワードでユーザーを作成する
+```
+PASS: ハッシュ化されたパスワードでユーザーを作成する
 ```
 
 ### ステップ6: リファクタリング（REFACTOR）
-コードの重複削除、命名改善など
+- コードの重複削除
+- 命名改善
+- エラーハンドリング追加
 
 ## 📚 追加リソース
 より多くの例については `references/test-patterns.md` を参照

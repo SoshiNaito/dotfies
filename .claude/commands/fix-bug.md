@@ -32,14 +32,11 @@
 
 ## 調査コマンド
 ```bash
-# エラーログ確認
-npm run dev 2>&1 | grep -i error
-
 # 最近の変更
 git log --oneline -20
 
 # 特定のエラーを検索
-grep -r "ErrorMessage" src/
+grep -r "ErrorMessage" .
 ```
 
 今すぐバグの調査を開始してください。

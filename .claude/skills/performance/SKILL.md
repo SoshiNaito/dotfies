@@ -8,177 +8,67 @@ description: パフォーマンス最適化のチェックリストとベスト�
 ## データベース最適化
 
 ### N+1クエリ問題
-
-```typescript
-// ❌ 悪い例: N+1クエリ
-const users = await db.users.findAll()
-for (const user of users) {
-  user.posts = await db.posts.findByUserId(user.id) // N回クエリ
-}
-
-// ✅ 良い例: JOINまたはeager loading
-const users = await db.users.findAll({
-  include: [{ model: Post }]
-})
-
-// ✅ 良い例: バッチクエリ
-const users = await db.users.findAll()
-const userIds = users.map(u => u.id)
-const posts = await db.posts.findAll({ where: { userId: userIds } })
-const postsByUser = groupBy(posts, 'userId')
-users.forEach(u => u.posts = postsByUser[u.id] || [])
+```
+❌ 悪い: ループ内でクエリを実行（N回）
+✅ 良い: JOINまたはeager loadingで1回のクエリに
+✅ 良い: バッチクエリで一括取得
 ```
 
 ### インデックス
-
-```sql
--- 頻繁に検索するカラムにインデックス
-CREATE INDEX idx_users_email ON users(email);
-
--- 複合インデックス（カラム順序が重要）
-CREATE INDEX idx_orders_user_date ON orders(user_id, created_at);
-
--- 部分インデックス
-CREATE INDEX idx_active_users ON users(email) WHERE active = true;
-```
+- 頻繁に検索するカラムにインデックスを作成
+- 複合インデックスはカラム順序が重要（左端から使用される）
+- 部分インデックスで特定条件のクエリを高速化
+- インデックスの過剰作成は書き込み性能に影響
 
 ### クエリ最適化
-
-```typescript
-// ❌ 悪い例: 全件取得
-const allUsers = await db.users.findAll()
-const activeCount = allUsers.filter(u => u.active).length
-
-// ✅ 良い例: DBでカウント
-const activeCount = await db.users.count({ where: { active: true } })
-
-// ❌ 悪い例: SELECT *
-SELECT * FROM users WHERE id = 1
-
-// ✅ 良い例: 必要なカラムのみ
-SELECT id, name, email FROM users WHERE id = 1
-```
+- SELECT * を避け、必要なカラムのみ取得
+- COUNT はDBで実行（全件取得してからカウントしない）
+- EXPLAIN で実行計画を確認
+- 大量データは分割して処理
 
 ## フロントエンド最適化
 
-### React メモ化
-
-```tsx
-// useMemo: 計算結果をキャッシュ
-const expensiveValue = useMemo(() => {
-  return items.filter(item => item.price > 100).sort((a, b) => b.price - a.price)
-}, [items])
-
-// useCallback: 関数をキャッシュ
-const handleClick = useCallback((id: string) => {
-  setSelectedId(id)
-}, [])
-
-// React.memo: コンポーネントの再レンダリング防止
-const ListItem = React.memo(({ item, onClick }: Props) => {
-  return <div onClick={() => onClick(item.id)}>{item.name}</div>
-})
-```
+### レンダリング最適化
+- 不要な再レンダリングを避ける
+- 計算結果のメモ化
+- コンポーネントの適切な分割
+- 仮想スクロール（大量リスト）
 
 ### 遅延読み込み
-
-```tsx
-// コンポーネントの遅延読み込み
-const HeavyComponent = React.lazy(() => import('./HeavyComponent'))
-
-// Suspenseでラップ
-<Suspense fallback={<Loading />}>
-  <HeavyComponent />
-</Suspense>
-
-// 画像の遅延読み込み
-<img src={url} loading="lazy" alt="..." />
-```
+- コンポーネントの遅延読み込み
+- 画像の遅延読み込み（loading="lazy"）
+- ルートベースのコード分割
 
 ### バンドルサイズ削減
-
-```typescript
-// ❌ 悪い例: ライブラリ全体をインポート
-import _ from 'lodash'
-
-// ✅ 良い例: 必要な関数のみ
-import debounce from 'lodash/debounce'
-
-// ❌ 悪い例: moment.js（大きい）
-import moment from 'moment'
-
-// ✅ 良い例: date-fns（ツリーシェイク可能）
-import { format } from 'date-fns'
-```
+- 必要な機能のみインポート（ツリーシェイキング）
+- 軽量な代替ライブラリを検討
+- バンドル分析ツールで確認
 
 ## バックエンド最適化
 
 ### キャッシング
-
-```typescript
-// Redis キャッシュ
-async function getUserWithCache(id: string): Promise<User> {
-  const cacheKey = `user:${id}`
-
-  // キャッシュチェック
-  const cached = await redis.get(cacheKey)
-  if (cached) {
-    return JSON.parse(cached)
-  }
-
-  // DBから取得
-  const user = await db.users.findById(id)
-
-  // キャッシュに保存（TTL: 1時間）
-  await redis.setex(cacheKey, 3600, JSON.stringify(user))
-
-  return user
-}
-
-// キャッシュ無効化
-async function updateUser(id: string, data: Partial<User>) {
-  await db.users.update(id, data)
-  await redis.del(`user:${id}`)
-}
+```
+1. キャッシュチェック
+2. ヒット → キャッシュから返す
+3. ミス → 計算/取得してキャッシュに保存
+4. 適切なTTLを設定
+5. 更新時にキャッシュを無効化
 ```
 
 ### ページネーション
-
-```typescript
-// オフセットベース（小規模向け）
-async function getUsers(page: number, limit: number) {
-  const offset = (page - 1) * limit
-  return db.users.findAll({ limit, offset })
-}
-
-// カーソルベース（大規模向け）
-async function getUsers(cursor?: string, limit: number = 20) {
-  const where = cursor ? { id: { gt: cursor } } : {}
-  const users = await db.users.findAll({ where, limit: limit + 1 })
-
-  const hasMore = users.length > limit
-  const items = hasMore ? users.slice(0, -1) : users
-  const nextCursor = hasMore ? items[items.length - 1].id : null
-
-  return { items, nextCursor, hasMore }
-}
-```
+- **オフセットベース**: 小規模データ向け（LIMIT/OFFSET）
+- **カーソルベース**: 大規模データ向け（WHERE id > cursor）
 
 ### 並列処理
-
-```typescript
-// ❌ 悪い例: 順次実行
-const user = await getUser(id)
-const posts = await getPosts(userId)
-const comments = await getComments(postIds)
-
-// ✅ 良い例: 並列実行（依存関係がない場合）
-const [user, settings, notifications] = await Promise.all([
-  getUser(id),
-  getSettings(id),
-  getNotifications(id),
-])
 ```
+❌ 悪い: 順次実行（依存関係がないのに待つ）
+✅ 良い: 並列実行（Promise.all など）
+```
+
+### 非同期処理
+- 重い処理はバックグラウンドジョブに
+- キュー（ジョブキュー）の活用
+- タイムアウトの設定
 
 ## チェックリスト
 
@@ -187,28 +77,41 @@ const [user, settings, notifications] = await Promise.all([
 - [ ] 適切なインデックスがあるか
 - [ ] 必要なカラムのみ取得しているか
 - [ ] ページネーションを実装しているか
+- [ ] スロークエリをモニタリングしているか
 
 ### フロントエンド
 - [ ] 不要な再レンダリングがないか
 - [ ] 遅延読み込みを使用しているか
 - [ ] バンドルサイズは適切か
 - [ ] 画像は最適化されているか
+- [ ] Core Web Vitals は良好か
 
 ### バックエンド
 - [ ] キャッシングを活用しているか
 - [ ] 非同期処理を並列化しているか
 - [ ] 重い処理はバックグラウンドジョブにしているか
+- [ ] タイムアウトを設定しているか
+
+## 計測の原則
+
+1. **推測するな、計測せよ**: 最適化前に必ずプロファイリング
+2. **ボトルネックを特定**: 影響が大きい箇所から対処
+3. **ベンチマークを取る**: 最適化前後で比較
+4. **トレードオフを考慮**: 可読性・保守性とのバランス
 
 ## 計測ツール
 
-```bash
-# Lighthouse (フロントエンド)
-npx lighthouse https://example.com --view
+### フロントエンド
+- ブラウザ開発者ツール（Performance タブ）
+- Lighthouse
+- Web Vitals
 
-# バンドル分析
-npx webpack-bundle-analyzer stats.json
+### バックエンド
+- APMツール（New Relic, Datadog など）
+- プロファイラ
+- ログ分析
 
-# Node.js プロファイリング
-node --prof app.js
-node --prof-process isolate-*.log > profile.txt
-```
+### データベース
+- EXPLAIN / EXPLAIN ANALYZE
+- スロークエリログ
+- クエリアナライザ

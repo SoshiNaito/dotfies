@@ -12,178 +12,82 @@ description: 堅牢なエラーハンドリングパターンとベストプラ�
 3. **回復可能性**: 回復可能なエラーと致命的エラーを区別
 4. **ユーザーフレンドリー**: 技術的詳細を隠し、意味のあるメッセージを
 
-## カスタムエラークラス
+## カスタムエラークラスの設計
 
-```typescript
-// ベースエラー
-export class AppError extends Error {
-  constructor(
-    message: string,
-    public code: string,
-    public statusCode: number = 500,
-    public isOperational: boolean = true
-  ) {
-    super(message)
-    this.name = this.constructor.name
-    Error.captureStackTrace(this, this.constructor)
-  }
-}
+### 階層構造
+```
+AppError (ベース)
+├── ValidationError    (400 Bad Request)
+├── AuthenticationError (401 Unauthorized)
+├── AuthorizationError  (403 Forbidden)
+├── NotFoundError       (404 Not Found)
+├── ConflictError       (409 Conflict)
+└── InternalError       (500 Internal Error)
+```
 
-// 具体的なエラー
-export class ValidationError extends AppError {
-  constructor(message: string, public fields?: Record<string, string>) {
-    super(message, 'VALIDATION_ERROR', 400)
-  }
-}
+### エラークラスの属性
+- `message`: ユーザー向けメッセージ
+- `code`: 機械可読なエラーコード
+- `statusCode`: HTTPステータスコード
+- `isOperational`: 運用エラーか（true）プログラミングエラーか（false）
+- `details`: 追加情報（バリデーションエラーのフィールドなど）
 
-export class AuthenticationError extends AppError {
-  constructor(message: string = '認証が必要です') {
-    super(message, 'AUTHENTICATION_ERROR', 401)
-  }
-}
+## エラーハンドリングパターン
 
-export class AuthorizationError extends AppError {
-  constructor(message: string = '権限がありません') {
-    super(message, 'AUTHORIZATION_ERROR', 403)
-  }
-}
+### 1. 集中エラーハンドラー
+- アプリケーション全体で一貫したエラー処理
+- ログ出力の統一
+- 適切なレスポンス形式
 
-export class NotFoundError extends AppError {
-  constructor(resource: string) {
-    super(`${resource}が見つかりません`, 'NOT_FOUND', 404)
-  }
-}
+### 2. 非同期ラッパー
+- 非同期関数のエラーを自動キャッチ
+- try-catch の繰り返しを削減
 
-export class ConflictError extends AppError {
-  constructor(message: string) {
-    super(message, 'CONFLICT', 409)
+### 3. Result型パターン
+```
+成功時: { success: true, data: T }
+失敗時: { success: false, error: E }
+```
+- 例外を使わずにエラーを表現
+- 呼び出し側でのエラーハンドリングを強制
+
+## エラーレスポンス形式
+
+### APIレスポンス
+```
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "入力内容に問題があります",
+    "details": [
+      { "field": "email", "message": "有効なメールアドレスを入力してください" }
+    ]
   }
 }
 ```
 
-## Express エラーハンドリング
-
-### ミドルウェア
-
-```typescript
-// asyncハンドラーラッパー
-export const asyncHandler = (fn: RequestHandler): RequestHandler => {
-  return (req, res, next) => {
-    Promise.resolve(fn(req, res, next)).catch(next)
-  }
-}
-
-// グローバルエラーハンドラー
-export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  // ログ出力
-  logger.error({
-    message: err.message,
-    stack: err.stack,
-    path: req.path,
-    method: req.method,
-  })
-
-  // 本番環境ではスタックトレースを隠す
-  if (err instanceof AppError) {
-    return res.status(err.statusCode).json({
-      error: {
-        code: err.code,
-        message: err.message,
-        ...(err instanceof ValidationError && { fields: err.fields }),
-      },
-    })
-  }
-
-  // 予期しないエラー
-  res.status(500).json({
-    error: {
-      code: 'INTERNAL_ERROR',
-      message: process.env.NODE_ENV === 'production'
-        ? 'サーバーエラーが発生しました'
-        : err.message,
-    },
-  })
+### ログ出力
+```
+{
+  "level": "error",
+  "message": "エラーメッセージ",
+  "code": "ERROR_CODE",
+  "stack": "スタックトレース（開発環境のみ）",
+  "context": { "userId": "123", "action": "createOrder" }
 }
 ```
 
-### 使用例
+## 環境別の動作
 
-```typescript
-router.get('/users/:id', asyncHandler(async (req, res) => {
-  const user = await userService.findById(req.params.id)
-  if (!user) {
-    throw new NotFoundError('ユーザー')
-  }
-  res.json(user)
-}))
-```
+### 開発環境
+- 詳細なスタックトレースを表示
+- デバッグ情報を含める
+- エラーの原因を明確に
 
-## React エラー境界
-
-```tsx
-interface Props {
-  children: React.ReactNode
-  fallback?: React.ReactNode
-}
-
-interface State {
-  hasError: boolean
-  error?: Error
-}
-
-export class ErrorBoundary extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props)
-    this.state = { hasError: false }
-  }
-
-  static getDerivedStateFromError(error: Error): State {
-    return { hasError: true, error }
-  }
-
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // エラーレポートサービスに送信
-    errorReportingService.log({ error, errorInfo })
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return this.props.fallback || <ErrorFallback error={this.state.error} />
-    }
-    return this.props.children
-  }
-}
-```
-
-## 非同期エラーパターン
-
-### Result型パターン
-
-```typescript
-type Result<T, E = Error> =
-  | { success: true; data: T }
-  | { success: false; error: E }
-
-async function fetchUser(id: string): Promise<Result<User>> {
-  try {
-    const user = await db.users.findById(id)
-    if (!user) {
-      return { success: false, error: new NotFoundError('ユーザー') }
-    }
-    return { success: true, data: user }
-  } catch (error) {
-    return { success: false, error: error as Error }
-  }
-}
-
-// 使用
-const result = await fetchUser('123')
-if (result.success) {
-  console.log(result.data)
-} else {
-  console.error(result.error)
-}
-```
+### 本番環境
+- スタックトレースを隠す
+- ユーザーフレンドリーなメッセージ
+- 詳細はログに記録
 
 ## チェックリスト
 
@@ -192,5 +96,21 @@ if (result.success) {
 - [ ] エラーログを記録している
 - [ ] 本番環境で詳細を隠している
 - [ ] ユーザーフレンドリーなメッセージを表示
-- [ ] React ErrorBoundaryを実装している
+- [ ] UIにエラー境界を実装している（フロントエンド）
 - [ ] 非同期エラーを適切にキャッチしている
+- [ ] 予期しないエラーも適切に処理している
+
+## アンチパターン
+
+### ❌ 避けるべきこと
+- 空の catch ブロック
+- エラーを握りつぶす
+- スタックトレースの破棄
+- 一般的すぎるエラーメッセージ
+- 機密情報をエラーに含める
+
+### ✅ すべきこと
+- 具体的なエラータイプを使用
+- エラーの原因を保持（cause プロパティ）
+- 適切なログレベルを使用
+- 回復可能な場合はリトライ
