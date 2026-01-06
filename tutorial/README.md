@@ -48,7 +48,7 @@ Spring BootのTask管理APIを題材に、Claude Codeの機能を段階的に学
 ### 技術スタック
 
 - Java 17
-- Spring Boot 3.2
+- Spring Boot 3.5
 - Spring Data JPA
 - H2 Database（インメモリ）
 - Gradle

@@ -316,7 +316,7 @@ GET /tasks?page=0&size=20&sort=createdAt,desc
 
 ## 技術スタック
 - Java 17
-- Spring Boot 3.2
+- Spring Boot 3.5
 - H2 Database
 - Gradle
 
