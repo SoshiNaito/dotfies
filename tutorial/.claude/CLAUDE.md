@@ -5,7 +5,7 @@ Claude Codeの機能を学ぶためのハンズオンチュートリアル用プ
 
 ## 技術スタック
 - **Java**: 17
-- **Framework**: Spring Boot 3.2
+- **Framework**: Spring Boot 3.5
 - **Database**: H2 (インメモリ)
 - **Build**: Gradle
 
