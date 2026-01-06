@@ -8,11 +8,10 @@ Spring BootのTask管理APIを題材に、Claude Codeの機能を段階的に学
 - Spring Bootの基本を理解している方
 - AIペアプログラミングに興味がある方
 
-## 前提条件
+## 環境
 
+- M1以上のMac (Apple Silicon)
 - Java 17以上
-- Git
-- Claude Code CLI
 
 ※ Gradleはプロジェクトに含まれるWrapper（gradlew）を使用します
 

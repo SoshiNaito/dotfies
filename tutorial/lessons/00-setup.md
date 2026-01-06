@@ -15,36 +15,6 @@
 
 ※ Gradleはプロジェクトに含まれるGradle Wrapperを使用するため、別途インストール不要です。
 
-### Java 17のインストール
-
-#### macOS (Homebrew)
-```bash
-brew install openjdk@17
-```
-
-#### Ubuntu/Debian
-```bash
-sudo apt update
-sudo apt install openjdk-17-jdk
-```
-
-#### Windows (winget)
-```powershell
-winget install Microsoft.OpenJDK.17
-```
-
-### Claude Codeのインストール
-
-```bash
-npm install -g @anthropic-ai/claude-code
-```
-
-または
-
-```bash
-brew install claude-code
-```
-
 ## プロジェクトのセットアップ
 
 ### 1. リポジトリのクローン
@@ -184,16 +154,6 @@ lsof -i :8080
 ```bash
 # キャッシュをクリアして再ビルド
 ./gradlew clean build --refresh-dependencies
-```
-
-### Claude Codeが起動しない
-
-```bash
-# バージョン確認
-claude --version
-
-# 再インストール
-npm install -g @anthropic-ai/claude-code@latest
 ```
 
 ## 次のステップ
