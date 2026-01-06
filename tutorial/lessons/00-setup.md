@@ -10,9 +10,10 @@
 | ソフトウェア | バージョン | 確認コマンド |
 |------------|----------|-------------|
 | Java | 17以上 | `java -version` |
-| Maven | 3.6以上 | `mvn -version` |
 | Git | 任意 | `git --version` |
 | Claude Code | 最新 | `claude --version` |
+
+※ Gradleはプロジェクトに含まれるGradle Wrapperを使用するため、別途インストール不要です。
 
 ### Java 17のインストール
 
@@ -30,23 +31,6 @@ sudo apt install openjdk-17-jdk
 #### Windows (winget)
 ```powershell
 winget install Microsoft.OpenJDK.17
-```
-
-### Mavenのインストール
-
-#### macOS (Homebrew)
-```bash
-brew install maven
-```
-
-#### Ubuntu/Debian
-```bash
-sudo apt install maven
-```
-
-#### Windows (winget)
-```powershell
-winget install Apache.Maven
 ```
 
 ### Claude Codeのインストール
@@ -73,13 +57,13 @@ cd dotfies/tutorial/base-app/task-api
 ### 2. 依存関係のインストール
 
 ```bash
-mvn clean install
+./gradlew build
 ```
 
 ### 3. アプリケーションの起動確認
 
 ```bash
-mvn spring-boot:run
+./gradlew bootRun
 ```
 
 別のターミナルでAPIが動作していることを確認:
@@ -93,7 +77,7 @@ curl http://localhost:8080/api/tasks
 ### 4. テストの実行
 
 ```bash
-mvn test
+./gradlew test
 ```
 
 全てのテストがパスすることを確認してください。
@@ -130,7 +114,8 @@ Claude Codeがプロジェクト構造を理解していることを確認しま
 
 ```
 task-api/
-├── pom.xml                          # Maven設定
+├── build.gradle                     # Gradle設定
+├── settings.gradle                  # Gradleプロジェクト設定
 ├── src/
 │   ├── main/
 │   │   ├── java/com/example/taskapi/
@@ -191,14 +176,14 @@ curl -X DELETE http://localhost:8080/api/tasks/1
 lsof -i :8080
 
 # または別のポートで起動
-mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=8081
+./gradlew bootRun --args='--server.port=8081'
 ```
 
-### Mavenビルドエラー
+### Gradleビルドエラー
 
 ```bash
 # キャッシュをクリアして再ビルド
-mvn clean install -U
+./gradlew clean build --refresh-dependencies
 ```
 
 ### Claude Codeが起動しない

@@ -33,7 +33,7 @@
 
 ```bash
 # アプリケーション起動
-mvn spring-boot:run
+./gradlew bootRun
 
 # タスクを作成
 curl -X POST http://localhost:8080/api/tasks \

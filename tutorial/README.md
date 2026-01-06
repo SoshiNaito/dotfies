@@ -11,9 +11,10 @@ Spring BootのTask管理APIを題材に、Claude Codeの機能を段階的に学
 ## 前提条件
 
 - Java 17以上
-- Maven 3.8以上
 - Git
 - Claude Code CLI
+
+※ Gradleはプロジェクトに含まれるWrapper（gradlew）を使用します
 
 ## チュートリアル構成
 
@@ -50,7 +51,7 @@ Spring BootのTask管理APIを題材に、Claude Codeの機能を段階的に学
 - Spring Boot 3.2
 - Spring Data JPA
 - H2 Database（インメモリ）
-- Maven
+- Gradle
 
 ## 始め方
 
@@ -61,7 +62,7 @@ cd tutorial
 
 # 2. ベースアプリを起動
 cd base-app/task-api
-./mvnw spring-boot:run
+./gradlew bootRun
 
 # 3. 動作確認
 curl http://localhost:8080/api/tasks

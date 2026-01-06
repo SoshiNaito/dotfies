@@ -7,13 +7,15 @@ Claude Codeの機能を学ぶためのハンズオンチュートリアル用プ
 - **Java**: 17
 - **Framework**: Spring Boot 3.2
 - **Database**: H2 (インメモリ)
-- **Build**: Maven
+- **Build**: Gradle
 
 ## プロジェクト構造
 
 ```
 tutorial/
 ├── base-app/task-api/      # Spring Boot アプリケーション
+│   ├── build.gradle        # Gradle設定
+│   ├── settings.gradle     # Gradleプロジェクト設定
 │   ├── src/main/java/      # メインソース
 │   └── src/test/java/      # テストソース
 └── lessons/                 # チュートリアルレッスン
@@ -31,16 +33,19 @@ tutorial/
 
 ```bash
 # ビルド
-mvn clean install
+./gradlew build
 
 # テスト実行
-mvn test
+./gradlew test
 
 # アプリケーション起動
-mvn spring-boot:run
+./gradlew bootRun
 
 # 特定のテストクラス実行
-mvn test -Dtest=TaskServiceTest
+./gradlew test --tests TaskServiceTest
+
+# クリーンビルド
+./gradlew clean build
 ```
 
 ## API エンドポイント

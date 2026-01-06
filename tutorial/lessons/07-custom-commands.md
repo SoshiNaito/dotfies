@@ -32,13 +32,13 @@
 
 ```
 .claude/commands/run-tests.md を作成して、
-Mavenでテストを実行するコマンドにして
+Gradleでテストを実行するコマンドにして
 ```
 
 **.claude/commands/run-tests.md**:
 ```markdown
 ---
-description: Mavenでテストを実行する
+description: Gradleでテストを実行する
 ---
 
 # Run Tests
@@ -46,13 +46,13 @@ description: Mavenでテストを実行する
 以下の手順でテストを実行してください:
 
 1. プロジェクトルートディレクトリで実行
-2. `mvn test` コマンドを使用
+2. `./gradlew test` コマンドを使用
 3. テスト結果のサマリーを報告
 
 ## オプション
 
-- 特定のテストクラスを指定された場合: `mvn test -Dtest=クラス名`
-- 特定のメソッドを指定された場合: `mvn test -Dtest=クラス名#メソッド名`
+- 特定のテストクラスを指定された場合: `./gradlew test --tests クラス名`
+- 特定のメソッドを指定された場合: `./gradlew test --tests クラス名.メソッド名`
 
 ## 出力形式
 
@@ -112,10 +112,10 @@ description: ローカル環境でアプリケーションを起動
 
 ```bash
 # ビルド
-mvn clean package -DskipTests
+./gradlew clean build -x test
 
 # 起動（バックグラウンド）
-java -jar target/*.jar &
+java -jar build/libs/*.jar &
 
 # ヘルスチェック（起動完了まで待機）
 until curl -s http://localhost:8080/api/tasks > /dev/null; do
@@ -318,7 +318,7 @@ GET /tasks?page=0&size=20&sort=createdAt,desc
 - Java 17
 - Spring Boot 3.2
 - H2 Database
-- Maven
+- Gradle
 
 ## よく使うコマンド
 - /run-tests - テスト実行
