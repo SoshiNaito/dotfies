@@ -30,9 +30,19 @@ append_with_marker() {
         touch "$dest"
     fi
 
-    # 既存のdotfiles部分を削除（マーカー間を削除）
+    # 既存のマーカー間の内容を抽出して比較
     if grep -q "$MARKER_START" "$dest" 2>/dev/null; then
-        echo "  既存のdotfiles設定を削除中..."
+        # マーカー間の内容を抽出（Source/Updated行を除く）
+        local existing_content=$(sed -n "/$MARKER_START/,/$MARKER_END/p" "$dest" | grep -v "^# ===" | grep -v "^# Source:" | grep -v "^# Updated:" | sed '/^$/d')
+        local new_content=$(cat "$src" | sed '/^$/d')
+
+        if [ "$existing_content" = "$new_content" ]; then
+            echo "  スキップ: 内容が同じです"
+            return
+        fi
+
+        # 内容が異なる場合は既存のdotfiles部分を削除
+        echo "  既存のdotfiles設定を更新中..."
         if [[ "$OSTYPE" == "darwin"* ]]; then
             sed -i '' "/$MARKER_START/,/$MARKER_END/d" "$dest"
         else
@@ -74,8 +84,21 @@ merge_json() {
     else
         # 存在する場合はマージ（jqが必要）
         if command -v jq &> /dev/null; then
+            # マージ結果と現在の内容を比較
+            local merged=$(jq -s '.[0] * .[1]' "$dest" "$src")
+            local current=$(cat "$dest")
+
+            # 正規化して比較（整形して比較）
+            local merged_normalized=$(echo "$merged" | jq -S '.')
+            local current_normalized=$(echo "$current" | jq -S '.')
+
+            if [ "$merged_normalized" = "$current_normalized" ]; then
+                echo "  スキップ: 内容が同じです"
+                return
+            fi
+
             local tmp=$(mktemp)
-            jq -s '.[0] * .[1]' "$dest" "$src" > "$tmp" && mv "$tmp" "$dest"
+            echo "$merged" > "$tmp" && mv "$tmp" "$dest"
             echo "  マージ: $dest"
         else
             echo "  警告: jqがインストールされていません。$name をスキップします。"
