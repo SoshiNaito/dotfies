@@ -52,6 +52,33 @@ skills（skills/配下）
 - Claude Code本体はオーケストレーションに専念する
 - 実作業は必ずsubagentに委譲する
 - skillsへのアクセスはsubagent経由のみ(manage-memoryのみ例外的にそのままアクセスできるとします)
+- subagentは積極的にskillsを使うようにする
+
+### 絶対遵守事項（CRITICAL - 違反厳禁）
+
+**オーケストレーター（Claude Code本体）は：**
+- 直接ツール（Read, Grep, Glob, Edit, Write等）を使用してはならない
+- 必ずsubagentに委譲すること
+- 「簡単だから」「1ファイルだけだから」という理由でsubagentをスキップしてはならない
+
+**subagentは：**
+- 該当するskillsがある場合は必ず使用すること
+- skillsを「面倒だから」「単純だから」という理由でスキップしてはならない
+
+**違反例（あってはならない）：**
+```
+❌ オーケストレーターが直接Readツールでファイルを読む
+❌ オーケストレーターが直接Grepで検索する
+❌ subagentがexplore-codebase skillを使わずに直接調査する
+❌ subagentがcommit skillを使わずに直接コミットする
+```
+
+**正しい例：**
+```
+✅ コードベース調査 → explorerを呼び出す → explorerがexplore-codebase skillを使う
+✅ バグ修正 → debuggerを呼び出す → debuggerがfix-bug skillを使う
+✅ コミット → implementerを呼び出す → implementerがcommit skillを使う
+```
 
 ### 実行手順
 
@@ -228,3 +255,5 @@ subagentがコードを書いた後、自己検証を行う：
 - --forceオプションをgitで使用しない
 - 確認なしに大規模な変更を行わない
 - subagentをスキップして直接skillsを使わない
+- **オーケストレーターがsubagentをスキップして直接ツールを使わない（絶対厳禁）**
+- **subagentが該当skillsをスキップしない（絶対厳禁）**
