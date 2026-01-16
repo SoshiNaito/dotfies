@@ -16,9 +16,8 @@ public class TodoService {
         this.todoRepository = todoRepository;
     }
 
-    // [バグ1] 全件取得すべきところ、未完了のみを返している
     public List<Todo> getAllTodos() {
-        return todoRepository.findByCompleted(false);
+        return todoRepository.findAll();
     }
 
     public Optional<Todo> getTodoById(Long id) {

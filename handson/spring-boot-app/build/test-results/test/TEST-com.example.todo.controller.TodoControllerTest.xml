@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.example.todo.controller.TodoControllerTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-01-16T05:33:28" hostname="SoshinoMacBook-Air.local" time="0.581">
+<testsuite name="com.example.todo.controller.TodoControllerTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-01-16T06:16:41" hostname="SoshinoMacBook-Air.local" time="0.598">
   <properties/>
-  <testcase name="getTodoById_存在しない場合404()" classname="com.example.todo.controller.TodoControllerTest" time="0.446"/>
+  <testcase name="getTodoById_存在しない場合404()" classname="com.example.todo.controller.TodoControllerTest" time="0.465"/>
   <testcase name="deleteTodo_存在しない場合404()" classname="com.example.todo.controller.TodoControllerTest" time="0.007"/>
-  <testcase name="updateTodo_正常系()" classname="com.example.todo.controller.TodoControllerTest" time="0.096"/>
-  <testcase name="createTodo_正常系()" classname="com.example.todo.controller.TodoControllerTest" time="0.011"/>
-  <testcase name="deleteTodo_正常系()" classname="com.example.todo.controller.TodoControllerTest" time="0.008"/>
-  <testcase name="getTodoById_正常系()" classname="com.example.todo.controller.TodoControllerTest" time="0.007"/>
-  <system-out><![CDATA[14:33:24.847 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.example.todo.controller.TodoControllerTest]: TodoControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-14:33:24.953 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.example.todo.TodoApplication for test class com.example.todo.controller.TodoControllerTest
+  <testcase name="updateTodo_正常系()" classname="com.example.todo.controller.TodoControllerTest" time="0.086"/>
+  <testcase name="createTodo_正常系()" classname="com.example.todo.controller.TodoControllerTest" time="0.013"/>
+  <testcase name="deleteTodo_正常系()" classname="com.example.todo.controller.TodoControllerTest" time="0.012"/>
+  <testcase name="getTodoById_正常系()" classname="com.example.todo.controller.TodoControllerTest" time="0.011"/>
+  <system-out><![CDATA[15:16:38.148 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.example.todo.controller.TodoControllerTest]: TodoControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+15:16:38.253 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.example.todo.TodoApplication for test class com.example.todo.controller.TodoControllerTest
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -19,19 +19,19 @@
 
  :: Spring Boot ::                (v3.5.0)
 
-2026-01-16T14:33:25.211+09:00  INFO 54325 --- [    Test worker] c.e.todo.controller.TodoControllerTest   : Starting TodoControllerTest using Java 17.0.17 with PID 54325 (started by soshi in /Users/soshi/src/github.com/SoshiNaito/dotfies/handson/spring-boot-app)
-2026-01-16T14:33:25.212+09:00  INFO 54325 --- [    Test worker] c.e.todo.controller.TodoControllerTest   : No active profile set, falling back to 1 default profile: "default"
-2026-01-16T14:33:26.137+09:00  INFO 54325 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-01-16T14:33:26.185+09:00  INFO 54325 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 39 ms. Found 1 JPA repository interface.
-2026-01-16T14:33:26.515+09:00  INFO 54325 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-01-16T14:33:26.556+09:00  INFO 54325 --- [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.15.Final
-2026-01-16T14:33:26.600+09:00  INFO 54325 --- [    Test worker] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-01-16T14:33:26.861+09:00  INFO 54325 --- [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-01-16T14:33:26.883+09:00  INFO 54325 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-01-16T14:33:27.008+09:00  INFO 54325 --- [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:tododb user=SA
-2026-01-16T14:33:27.009+09:00  INFO 54325 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-01-16T14:33:27.024+09:00  WARN 54325 --- [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-01-16T14:33:27.039+09:00  INFO 54325 --- [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2026-01-16T15:16:38.653+09:00  INFO 77672 --- [    Test worker] c.e.todo.controller.TodoControllerTest   : Starting TodoControllerTest using Java 17.0.17 with PID 77672 (started by soshi in /Users/soshi/src/github.com/SoshiNaito/dotfies/handson/spring-boot-app)
+2026-01-16T15:16:38.655+09:00  INFO 77672 --- [    Test worker] c.e.todo.controller.TodoControllerTest   : No active profile set, falling back to 1 default profile: "default"
+2026-01-16T15:16:39.221+09:00  INFO 77672 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-01-16T15:16:39.266+09:00  INFO 77672 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 37 ms. Found 1 JPA repository interface.
+2026-01-16T15:16:39.559+09:00  INFO 77672 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-01-16T15:16:39.592+09:00  INFO 77672 --- [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.15.Final
+2026-01-16T15:16:39.613+09:00  INFO 77672 --- [    Test worker] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-01-16T15:16:39.800+09:00  INFO 77672 --- [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-01-16T15:16:39.823+09:00  INFO 77672 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-01-16T15:16:39.960+09:00  INFO 77672 --- [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:tododb user=SA
+2026-01-16T15:16:39.962+09:00  INFO 77672 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-01-16T15:16:39.980+09:00  WARN 77672 --- [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-01-16T15:16:39.997+09:00  INFO 77672 --- [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
 	Database driver: undefined/unknown
 	Database version: 2.3.232
@@ -39,16 +39,16 @@
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2026-01-16T14:33:27.663+09:00  INFO 54325 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-01-16T15:16:40.493+09:00  INFO 77672 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
 Hibernate: drop table if exists todo cascade 
 Hibernate: create table todo (completed boolean not null, id bigint generated by default as identity, title varchar(255), primary key (id))
-2026-01-16T14:33:27.691+09:00  INFO 54325 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-01-16T14:33:27.982+09:00  WARN 54325 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-01-16T14:33:28.218+09:00  INFO 54325 --- [    Test worker] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:tododb'
-2026-01-16T14:33:28.274+09:00  INFO 54325 --- [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
-2026-01-16T14:33:28.275+09:00  INFO 54325 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2026-01-16T14:33:28.276+09:00  INFO 54325 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
-2026-01-16T14:33:28.310+09:00  INFO 54325 --- [    Test worker] c.e.todo.controller.TodoControllerTest   : Started TodoControllerTest in 3.268 seconds (process running for 4.104)
+2026-01-16T15:16:40.511+09:00  INFO 77672 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-01-16T15:16:40.771+09:00  WARN 77672 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-01-16T15:16:41.005+09:00  INFO 77672 --- [    Test worker] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:tododb'
+2026-01-16T15:16:41.048+09:00  INFO 77672 --- [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-01-16T15:16:41.048+09:00  INFO 77672 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-01-16T15:16:41.050+09:00  INFO 77672 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2026-01-16T15:16:41.084+09:00  INFO 77672 --- [    Test worker] c.e.todo.controller.TodoControllerTest   : Started TodoControllerTest in 2.707 seconds (process running for 3.758)
 Hibernate: select t1_0.id,t1_0.completed,t1_0.title from todo t1_0
 Hibernate: select t1_0.id,t1_0.completed,t1_0.title from todo t1_0 where t1_0.id=?
 Hibernate: select t1_0.id,t1_0.completed,t1_0.title from todo t1_0

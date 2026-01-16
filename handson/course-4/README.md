@@ -92,7 +92,7 @@ reviewerが以下を確認します：
 
 ```bash
 # アプリを起動
-mvn spring-boot:run
+./gradlew spring-boot:run
 
 # 優先度付きTODOを作成
 curl -X POST http://localhost:8080/api/todos \

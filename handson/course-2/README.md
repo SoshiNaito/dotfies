@@ -80,7 +80,7 @@ testerは以下を行います：
 全てのテストが通ることを確認しましょう。
 
 ```bash
-mvn test
+./gradlew test
 ```
 
 ## まとめ
