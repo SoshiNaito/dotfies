@@ -1,0 +1,179 @@
+# Claude Code 設定ガイド
+
+本リポジトリにおけるClaude Codeの動作設定について説明する。
+
+## アーキテクチャ概要
+```
+ユーザー
+    ↓
+Claude Code本体（オーケストレーター）
+    ↓
+subagent（agents/配下）
+    ↓
+skills（skills/配下）
+```
+
+### 各レイヤーの責務
+
+| レイヤー | 責務 |
+|----------|------|
+| Claude Code本体 | タスクの受付、計画承認、subagentの呼び出し、結果統合 |
+| subagent | 専門領域での作業実行 |
+| skills | 具体的な作業手順・知識 |
+| hooks | 特定タイミングでの自動処理 |
+
+---
+
+## ディレクトリ構成
+```
+.claude/
+├── CLAUDE.md          # Claude Code本体の動作設定
+├── README.md          # 本ファイル
+├── agents/            # subagent定義
+│   ├── planner.md
+│   ├── architect.md
+│   ├── implementer.md
+│   ├── reviewer.md
+│   ├── tester.md
+│   ├── debugger.md
+│   └── doc-writer.md
+├── hooks/             # 自動トリガー処理
+│   ├── pre-commit.md
+│   ├── pre-push.md
+│   └── post-tool.md
+└── skills/            # 作業手順・知識
+    ├── check-accessibility/
+    ├── check-performance/
+    ├── check-security/
+    ├── commit/
+    ├── create-pr/
+    ├── design-api/
+    ├── fix-bug/
+    ├── generate-doc/
+    ├── handle-error/
+    ├── manage-memory/
+    ├── refactor/
+    ├── review-code/
+    ├── review-pr/
+    └── run-tdd/
+```
+
+---
+
+## subagent一覧
+
+| subagent | 役割 | 使用するskills |
+|----------|------|----------------|
+| `planner` | タスク分解、実行計画策定 | - |
+| `architect` | 設計判断、ファイル構成 | `design-api` |
+| `implementer` | コード実装 | `fix-bug`, `refactor`, `handle-error`, `commit` |
+| `reviewer` | コードレビュー | `review-code`, `review-pr`, `check-accessibility`, `check-performance`, `check-security` |
+| `tester` | テスト設計・実装・実行 | `run-tdd` |
+| `debugger` | エラー調査・修正 | `fix-bug`, `handle-error` |
+| `doc-writer` | ドキュメント作成 | `generate-doc`, `create-pr` |
+
+---
+
+## 実行フロー
+
+### 基本フロー
+
+1. ユーザーがタスクを依頼
+2. Claude Code本体が`planner`を呼び出し
+3. 計画をユーザーに提示、承認を得る
+4. 計画に沿ってsubagentを順次実行
+5. 結果を統合してユーザーに報告
+
+### 典型的なフロー例
+
+**機能実装：**
+```
+planner → architect → implementer → tester → reviewer
+```
+
+**バグ修正：**
+```
+planner → debugger → tester
+```
+
+**リファクタリング：**
+```
+planner → architect → implementer → reviewer
+```
+
+### ループ制御
+
+reviewer/testerから指摘があればimplementerに戻る。
+
+| ループ種別 | 上限 |
+|------------|------|
+| reviewer → implementer | 3回 |
+| tester → implementer | 3回 |
+| 全体の再計画 | 2回 |
+
+上限到達時はユーザーにエスカレーション。
+
+---
+
+## hooks一覧
+
+| hook | 発火タイミング | 目的 |
+|------|----------------|------|
+| `pre-commit` | コミット前 | 軽量な品質チェック |
+| `pre-push` | プッシュ前 | 包括的なチェック |
+| `post-tool` | ツール実行後 | 作業コンテキスト更新 |
+
+---
+
+## subagentへの指示フォーマット
+
+Claude Code本体からsubagentへの指示は以下の形式：
+```yaml
+task: "何をしてほしいか"
+target_agent: "subagent名"
+context:
+  previous_agent: "前のsubagent"
+  previous_output: "前の結果"
+constraints: []
+params:
+  # subagentごとに自由形式
+  key: value
+```
+
+---
+
+## カスタマイズ
+
+### subagentの追加
+
+1. `agents/`に新規`.md`ファイルを作成
+2. 既存subagentのフォーマットに従って定義
+3. 必要に応じて`CLAUDE.md`のsubagent一覧を更新
+
+### skillsの追加
+
+1. `skills/`に新規ディレクトリを作成
+2. skill定義を追加
+3. 該当subagentの「使用するskills」に追記
+
+### hooksの追加
+
+1. `hooks/`に新規`.md`ファイルを作成
+2. 発火タイミングと実行内容を定義
+
+---
+
+## 注意事項
+
+- Claude Code本体は直接skillsを使わない（subagent経由）
+- subagentへの委譲前にユーザー確認を取る
+- ループ上限に達したらエスカレーション
+- 30分以上かかる作業は事前に計画を提示
+
+---
+
+## 関連ドキュメント
+
+- [CLAUDE.md](./CLAUDE.md) - Claude Code本体の詳細設定
+- 各subagentの詳細は`agents/`配下を参照
+- 各skillの詳細は`skills/`配下を参照

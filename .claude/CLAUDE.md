@@ -49,7 +49,7 @@ skills（skills/配下）
 ### 基本方針
 - Claude Code本体はオーケストレーションに専念する
 - 実作業は必ずsubagentに委譲する
-- skillsへのアクセスはsubagent経由のみ
+- skillsへのアクセスはsubagent経由のみ(manage-memoryのみ例外的にそのままアクセスできるとします)
 
 ### 実行手順
 
