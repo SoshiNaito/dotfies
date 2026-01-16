@@ -36,7 +36,8 @@ skills（skills/配下）
 │   ├── reviewer.md
 │   ├── tester.md
 │   ├── debugger.md
-│   └── doc-writer.md
+│   ├── doc-writer.md
+│   └── explorer.md
 ├── hooks/             # 自動トリガー処理
 │   ├── pre-commit.md
 │   ├── pre-push.md
@@ -48,6 +49,7 @@ skills（skills/配下）
     ├── commit/
     ├── create-pr/
     ├── design-api/
+    ├── explore-codebase/
     ├── fix-bug/
     ├── generate-doc/
     ├── handle-error/
@@ -71,6 +73,7 @@ skills（skills/配下）
 | `tester` | テスト設計・実装・実行 | `run-tdd` |
 | `debugger` | エラー調査・修正 | `fix-bug`, `handle-error` |
 | `doc-writer` | ドキュメント作成 | `generate-doc`, `create-pr` |
+| `explorer` | コードベース調査 | `explore-codebase` |
 
 ---
 
@@ -99,6 +102,11 @@ planner → debugger → tester
 **リファクタリング：**
 ```
 planner → architect → implementer → reviewer
+```
+
+**コードベース調査：**
+```
+explorer（単独で完結）
 ```
 
 ### ループ制御

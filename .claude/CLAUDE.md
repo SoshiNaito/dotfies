@@ -31,6 +31,7 @@ skills（skills/配下）
 | `debugger` | エラー調査・修正 |
 | `architect` | 設計判断、ファイル構成 |
 | `doc-writer` | ドキュメント、README作成 |
+| `explorer` | コードベース調査（変更なし） |
 
 ### skills一覧と紐付け
 | subagent | 使用するskills |
@@ -41,6 +42,7 @@ skills（skills/配下）
 | `debugger` | `fix-bug`, `handle-error` |
 | `architect` | `design-api` |
 | `doc-writer` | `generate-doc`, `create-pr` |
+| `explorer` | `explore-codebase` |
 
 ---
 
@@ -81,6 +83,11 @@ planner → debugger → tester
 **リファクタリングの場合：**
 ```
 planner → architect → implementer → reviewer
+```
+
+**コードベース調査の場合：**
+```
+explorer（単独で完結）
 ```
 
 ---
@@ -167,6 +174,12 @@ params:
 params:
   error_message: "TypeError: Cannot read property..."
   reproduction_steps: ["1. ログイン画面を開く", "2. 送信ボタンを押す"]
+
+# explorerの場合
+params:
+  question: "このエンドポイントは何をしている？"
+  target: "/api/users"
+  depth: "deep"
 ```
 
 ---
