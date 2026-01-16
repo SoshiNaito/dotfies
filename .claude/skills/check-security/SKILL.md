@@ -1,9 +1,11 @@
 ---
-name: security-check
+name: check-security
 description: 認証、データ処理、一般的な脆弱性に関するセキュリティ検証チェックリスト。認証、パスワード、機密データを扱う際に自動的にロードされます。
 ---
 
-# セキュリティチェック
+# Check Security Skill
+
+セキュリティチェックを実行します。
 
 ## 🔐 認証と認可
 

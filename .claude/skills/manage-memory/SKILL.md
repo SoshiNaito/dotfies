@@ -1,8 +1,13 @@
-# エージェントメモリ
+---
+name: manage-memory
+description: 会話をまたいで残る知識を保存するための永続的なメモリ空間を管理します。
+---
+
+# Manage Memory Skill
 
 会話をまたいで残る知識を保存するための永続的なメモリ空間です。
 
-**保存場所:** `.claude/skills/agent-memory/memories/`
+**保存場所:** `.claude/skills/manage-memory/memories/`
 
 ## 積極的な活用
 
@@ -74,19 +79,19 @@ related: [src/core/file/fileProcessor.ts]
 
 ```bash
 # 1. カテゴリ一覧を表示
-ls .claude/skills/agent-memory/memories/
+ls .claude/skills/manage-memory/memories/
 
 # 2. すべてのsummaryを表示
-rg "^summary:" .claude/skills/agent-memory/memories/ --no-ignore --hidden
+rg "^summary:" .claude/skills/manage-memory/memories/ --no-ignore --hidden
 
 # 3. キーワードでsummaryを検索
-rg "^summary:.*キーワード" .claude/skills/agent-memory/memories/ --no-ignore --hidden -i
+rg "^summary:.*キーワード" .claude/skills/manage-memory/memories/ --no-ignore --hidden -i
 
 # 4. タグで検索
-rg "^tags:.*キーワード" .claude/skills/agent-memory/memories/ --no-ignore --hidden -i
+rg "^tags:.*キーワード" .claude/skills/manage-memory/memories/ --no-ignore --hidden -i
 
 # 5. 全文検索（summary検索で不十分な場合）
-rg "キーワード" .claude/skills/agent-memory/memories/ --no-ignore --hidden -i
+rg "キーワード" .claude/skills/manage-memory/memories/ --no-ignore --hidden -i
 
 # 6. 関連があれば特定のメモリファイルを読む
 ```
@@ -102,9 +107,9 @@ rg "キーワード" .claude/skills/agent-memory/memories/ --no-ignore --hidden 
 3. 必須のフロントマター付きでファイルを書き込む（現在の日付には`date +%Y-%m-%d`を使用）
 
 ```bash
-mkdir -p .claude/skills/agent-memory/memories/category-name/
+mkdir -p .claude/skills/manage-memory/memories/category-name/
 # 注意: 誤って上書きしないよう、書き込む前にファイルの存在を確認してください
-cat > .claude/skills/agent-memory/memories/category-name/filename.md << 'EOF'
+cat > .claude/skills/manage-memory/memories/category-name/filename.md << 'EOF'
 ---
 summary: "このメモリの簡単な説明"
 created: 2025-01-15
@@ -121,9 +126,9 @@ EOF
 - **更新**: 情報が変わったら、内容を更新しフロントマターに`updated`フィールドを追加
 - **削除**: 関連性がなくなったメモリを削除
   ```bash
-  trash .claude/skills/agent-memory/memories/category-name/filename.md
+  trash .claude/skills/manage-memory/memories/category-name/filename.md
   # 空になったカテゴリフォルダを削除
-  rmdir .claude/skills/agent-memory/memories/category-name/ 2>/dev/null || true
+  rmdir .claude/skills/manage-memory/memories/category-name/ 2>/dev/null || true
   ```
 - **統合**: 関連するメモリが増えたらマージする
 - **再編成**: 知識ベースが増えたら、より適切なカテゴリにメモリを移動

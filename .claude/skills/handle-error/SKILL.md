@@ -1,9 +1,11 @@
 ---
-name: error-handling
+name: handle-error
 description: 堅牢なエラーハンドリングパターンとベストプラクティス。例外処理やエラー境界を実装する際に参照。
 ---
 
-# エラーハンドリングガイド
+# Handle Error Skill
+
+エラーハンドリングのガイドを提供します。
 
 ## 基本原則
 

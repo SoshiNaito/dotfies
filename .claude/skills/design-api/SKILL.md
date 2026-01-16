@@ -1,9 +1,11 @@
 ---
-name: api-design
+name: design-api
 description: RESTful API設計のベストプラクティスとガイドライン。APIエンドポイント実装時に参照。
 ---
 
-# RESTful API設計ガイド
+# Design API Skill
+
+RESTful API設計のガイドを提供します。
 
 ## 基本原則
 

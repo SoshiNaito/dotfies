@@ -1,9 +1,11 @@
 ---
-name: accessibility
+name: check-accessibility
 description: アクセシビリティ (a11y) チェックリストとベストプラクティス。UIコンポーネント実装時に参照。
 ---
 
-# アクセシビリティ (a11y) ガイド
+# Check Accessibility Skill
+
+アクセシビリティ (a11y) チェックを実行します。
 
 ## 基本原則 (WCAG 2.1)
 

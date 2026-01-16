@@ -1,4 +1,11 @@
-プルリクエストをレビューします。
+---
+name: review-pr
+description: 他人のプルリクエストをレビューします。GitHub上のPRを取得し、コードをチェックしてフィードバックを投稿。
+---
+
+# Review PR Skill
+
+他人のプルリクエストをGitHub上でレビューします。
 
 PR番号: $ARGUMENTS
 

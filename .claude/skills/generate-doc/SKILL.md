@@ -1,3 +1,10 @@
+---
+name: generate-doc
+description: ドキュメント生成ワークフローを開始します。
+---
+
+# Generate Doc Skill
+
 ドキュメント生成ワークフローを開始します。
 
 対象: $ARGUMENTS

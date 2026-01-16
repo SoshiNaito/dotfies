@@ -1,10 +1,10 @@
 ---
-name: tdd-workflow
+name: run-tdd
 description: 新機能実装やバグ修正時にテストファーストアプローチを確実にするためのテスト駆動開発ワークフローガイド。
 allowed-tools: Read, Write, Edit, Bash
 ---
 
-# TDDワークフロー
+# Run TDD Skill
 
 テスト駆動開発の標準ワークフローを提供します。
 

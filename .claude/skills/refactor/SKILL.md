@@ -1,3 +1,10 @@
+---
+name: refactor
+description: リファクタリングワークフローを開始します。
+---
+
+# Refactor Skill
+
 リファクタリングワークフローを開始します。
 
 対象: $ARGUMENTS

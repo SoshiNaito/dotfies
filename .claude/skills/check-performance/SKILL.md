@@ -1,9 +1,11 @@
 ---
-name: performance
+name: check-performance
 description: パフォーマンス最適化のチェックリストとベストプラクティス。遅いコードや最適化が必要な場合に参照。
 ---
 
-# パフォーマンス最適化ガイド
+# Check Performance Skill
+
+パフォーマンスチェックを実行します。
 
 ## データベース最適化
 
