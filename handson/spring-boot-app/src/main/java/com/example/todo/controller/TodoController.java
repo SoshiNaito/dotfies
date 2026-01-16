@@ -2,6 +2,7 @@ package com.example.todo.controller;
 
 import com.example.todo.model.Todo;
 import com.example.todo.service.TodoService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,13 +32,13 @@ public class TodoController {
     }
 
     @PostMapping
-    public ResponseEntity<Todo> createTodo(@RequestBody Todo todo) {
+    public ResponseEntity<Todo> createTodo(@Valid @RequestBody Todo todo) {
         Todo created = todoService.createTodo(todo);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Todo> updateTodo(@PathVariable Long id, @RequestBody Todo todoDetails) {
+    public ResponseEntity<Todo> updateTodo(@PathVariable Long id, @Valid @RequestBody Todo todoDetails) {
         return todoService.updateTodo(id, todoDetails)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

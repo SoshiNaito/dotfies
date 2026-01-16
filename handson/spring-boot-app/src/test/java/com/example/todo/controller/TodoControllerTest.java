@@ -87,4 +87,56 @@ class TodoControllerTest {
         mockMvc.perform(delete("/api/todos/{id}", 999L))
                 .andExpect(status().isNotFound());
     }
+
+    // ========== バリデーションテスト ==========
+
+    @Test
+    void createTodo_タイトルがnullの場合400エラー() throws Exception {
+        // Arrange: タイトルがnullのTodoを準備
+        String jsonWithNullTitle = "{\"title\":null,\"completed\":false}";
+
+        // Act & Assert: 400 Bad Requestが返ることを検証
+        mockMvc.perform(post("/api/todos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonWithNullTitle))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createTodo_タイトルが空文字の場合400エラー() throws Exception {
+        // Arrange: タイトルが空文字のTodoを準備
+        Todo todo = new Todo("");
+
+        // Act & Assert: 400 Bad Requestが返ることを検証
+        mockMvc.perform(post("/api/todos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(todo)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createTodo_タイトルが空白のみの場合400エラー() throws Exception {
+        // Arrange: タイトルが空白のみのTodoを準備
+        Todo todo = new Todo("   ");
+
+        // Act & Assert: 400 Bad Requestが返ることを検証
+        mockMvc.perform(post("/api/todos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(todo)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void updateTodo_タイトルが空の場合400エラー() throws Exception {
+        // Arrange: 既存のTodoを作成し、空のタイトルで更新を試みる
+        Todo saved = todoRepository.save(new Todo("元のタイトル"));
+        Todo updateRequest = new Todo("");
+        updateRequest.setId(saved.getId());
+
+        // Act & Assert: 400 Bad Requestが返ることを検証
+        mockMvc.perform(put("/api/todos/{id}", saved.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateRequest)))
+                .andExpect(status().isBadRequest());
+    }
 }
