@@ -139,4 +139,23 @@ class TodoControllerTest {
                         .content(objectMapper.writeValueAsString(updateRequest)))
                 .andExpect(status().isBadRequest());
     }
+
+    // ========== エラーレスポンス形式テスト ==========
+
+    @Test
+    void createTodo_バリデーションエラー時のレスポンス形式を確認() throws Exception {
+        // Arrange: 空タイトルのTodoを準備
+        Todo todo = new Todo("");
+
+        // Act & Assert: エラーレスポンスの形式を検証
+        mockMvc.perform(post("/api/todos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(todo)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status", is(400)))
+                .andExpect(jsonPath("$.error", is("Bad Request")))
+                .andExpect(jsonPath("$.message", is("バリデーションエラー")))
+                .andExpect(jsonPath("$.details[0].field", is("title")))
+                .andExpect(jsonPath("$.details[0].message", is("タイトルは必須です")));
+    }
 }
